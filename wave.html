@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Wave simulator</title>
+    <meta charset='UTF-8'>
+    <script src='https://d3js.org/d3.v4.min.js'></script>
+  </head>
+  <body>
+    <canvas id='canvas' width='1800' height='1000'/>
+    <script>
+      let canvas = d3.select("canvas");
+      let ctx = canvas.node().getContext('2d');
+
+      let width = 1900;
+      let height = 1000;
+      let ymid = height / 2;
+      let yscale = height / 4;
+
+      let c = 344.8;
+      let rho_0 = 1.18;
+      let f = 50;
+      let omega = 2 * Math.PI * f;
+      let k = omega / c;
+      let lambda = c / f;
+      console.log(lambda);
+      let l = 8;
+      let t = 1.0 / f;
+      let dt = 0.0001;
+      let u0 = 1.0;
+
+      var timer = d3.timer(function(elapsed) {
+        ctx.clearRect(0,0, width, height);
+        ctx.beginPath();
+        ctx.moveTo(width, ymid - u0 * yscale);
+        ctx.lineTo(0, ymid - u0 * yscale);
+        ctx.moveTo(width, ymid);
+        ctx.lineTo(0, ymid);
+        for(sx = 0; sx <= width; sx += 1){
+          x = l * sx / width;
+          y = u0 * Math.sin(omega * t) * Math.sin(k * x) / Math.sin(k * l);
+          //p_plus = rho_0 * c * Math.sin(omega * t) / (2 * Math.cos(k * l));
+          //y = p_plus / rho_0 / c * Math.sin(k * x);
+          sy = ymid + y * yscale;
+          ctx.lineTo(sx, sy);
+        }
+        ctx.stroke();
+        t += dt;
+      }, 150);
+    </script>
+  </body>
+</html>
